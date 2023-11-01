@@ -90,4 +90,6 @@ public class MathController {
 
         return String.format("Average = %.2f", average);
     }
+
+
 }

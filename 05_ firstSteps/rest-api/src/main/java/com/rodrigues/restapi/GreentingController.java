@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 @RequestMapping("/greeting")
-public class GreentingController {git
+public class GreentingController {
 
     private static final String template = "Hello, %s!";
     private static final AtomicLong counter = new AtomicLong();
