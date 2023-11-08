@@ -22,8 +22,8 @@ public class PersonService {
 
     @Autowired
     private PersonRepository repository;
-
     private Logger logger = Logger.getLogger(PersonService.class.getName());
+
     public PersonVOV1 findById(Long id) {
         logger.info("finding one person");
 
@@ -77,7 +77,7 @@ public class PersonService {
         entity.setAddress(person.getAddress());
         entity.setGender(person.getGender());
 
-        var vo = DozerMapper.parseObject(entity, PersonVOV1.class);
+        var vo = DozerMapper.parseObject(repository.save(entity), PersonVOV1.class);
         vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel());
         return vo;
     }

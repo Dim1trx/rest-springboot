@@ -13,7 +13,7 @@ import com.rodrigues.restapi.model.Person;
 
 import java.util.List;
 
-public class DozerConverterTest {
+public class DozerConverterPersonTest {
 
     MockPerson inputObject;
 
