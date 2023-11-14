@@ -36,6 +36,7 @@ public class BookServiceTests {
 
     @BeforeEach
     void setUp() {
+
         input = new MockBook();
         MockitoAnnotations.openMocks(this);
     }
