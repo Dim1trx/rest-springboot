@@ -21,9 +21,8 @@ public class PersonVOV1 extends RepresentationModel<PersonVOV1> implements Seria
     @JsonProperty("last_name")
     private String lastName;
     private String address;
-
     private String gender;
-
+    private Boolean enabled;
     public PersonVOV1() {
     }
 
@@ -75,16 +74,25 @@ public class PersonVOV1 extends RepresentationModel<PersonVOV1> implements Seria
         this.gender = gender;
     }
 
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         PersonVOV1 that = (PersonVOV1) o;
-        return Objects.equals(key, that.key);
+        return Objects.equals(key, that.key) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(address, that.address) && Objects.equals(gender, that.gender) && Objects.equals(enabled, that.enabled);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key);
+        return Objects.hash(super.hashCode(), key, firstName, lastName, address, gender, enabled);
     }
 }

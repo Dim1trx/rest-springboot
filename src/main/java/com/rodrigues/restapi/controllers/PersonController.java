@@ -25,7 +25,7 @@ public class PersonController {
     private PersonService service;
 
 
-    /*@CrossOrigin(origins = "http://localhost:8080")*/
+
     @GetMapping(
             value = "/{id}",
             produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLCICATION_YAML}
@@ -67,6 +67,7 @@ public class PersonController {
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content),
             }
     )
+    /*@CrossOrigin(origins = {"http://localhost:8080", "https://rodrigues.com.br"})*/
     public ResponseEntity<List<PersonVOV1>> findAll() {
         return ResponseEntity.ok().body(service.findAll());
     }
@@ -112,6 +113,29 @@ public class PersonController {
     public PersonVOV1 create(@RequestBody PersonVOV1 person) {
         return service.create(person);
     }
+
+    @PatchMapping(
+            value = "/{id}",
+            produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLCICATION_YAML}
+    )
+    @Operation(
+            summary = "Disables a specific person by id", description = "Disables a specific person by id",
+            tags = {"People"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success: people found",
+                            content = @Content(schema = @Schema(implementation = PersonVOV1.class))
+                    ),
+                    @ApiResponse(responseCode = "204", description = "No content", content = @Content),
+                    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content),
+            }
+    )
+    public PersonVOV1 disablePerson(@PathVariable(value = "id") Long id) {
+        return service.disablePerson(id);
+    }
+
 
     @DeleteMapping(value = "/{id}")
     @Operation(

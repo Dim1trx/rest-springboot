@@ -8,6 +8,7 @@ import com.rodrigues.restapi.data.vo.v1.PersonVOV1;
 import com.rodrigues.restapi.mapper.DozerMapper;
 import com.rodrigues.restapi.model.Person;
 import com.rodrigues.restapi.repositories.PersonRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -82,6 +83,22 @@ public class PersonService {
         return vo;
     }
 
+    @Transactional
+    public PersonVOV1 disablePerson(Long id) {
+        logger.info("disabling one person");
+
+        repository.disablePerson(id);
+
+        var entity = repository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
+
+        var vo = DozerMapper.parseObject(entity, PersonVOV1.class);
+        vo.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
+
+        repository.save(entity);
+        return vo;
+    }
+
     public void delete(Long id) {
         logger.info("deleting person");
 
@@ -90,4 +107,5 @@ public class PersonService {
 
         repository.delete(entity);
     }
+
 }
