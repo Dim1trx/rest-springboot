@@ -1,6 +1,6 @@
 package com.rodrigues.restapi.controllers;
 
-import com.rodrigues.restapi.data.vo.v1.PersonVOV1;
+import com.rodrigues.restapi.data.vo.v1.entities.PersonVOV1;
 import com.rodrigues.restapi.services.PersonService;
 import com.rodrigues.restapi.util.MediaType;
 import io.swagger.v3.oas.annotations.Operation;

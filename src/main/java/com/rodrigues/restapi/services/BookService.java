@@ -1,7 +1,7 @@
 package com.rodrigues.restapi.services;
 
 import com.rodrigues.restapi.controllers.BookController;
-import com.rodrigues.restapi.data.vo.v1.BookVOV1;
+import com.rodrigues.restapi.data.vo.v1.entities.BookVOV1;
 import com.rodrigues.restapi.exceptions.RequiredObjectIsNullException;
 import com.rodrigues.restapi.exceptions.ResourceNotFoundException;
 import com.rodrigues.restapi.mapper.DozerMapper;

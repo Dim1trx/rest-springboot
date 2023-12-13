@@ -2,7 +2,7 @@ package com.rodrigues.restapi.services;
 
 
 import com.rodrigues.restapi.controllers.PersonController;
-import com.rodrigues.restapi.data.vo.v1.PersonVOV1;
+import com.rodrigues.restapi.data.vo.v1.entities.PersonVOV1;
 import com.rodrigues.restapi.exceptions.RequiredObjectIsNullException;
 import com.rodrigues.restapi.exceptions.ResourceNotFoundException;
 import com.rodrigues.restapi.mapper.DozerMapper;

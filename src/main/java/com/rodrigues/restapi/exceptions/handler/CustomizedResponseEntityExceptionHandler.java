@@ -1,9 +1,6 @@
 package com.rodrigues.restapi.exceptions.handler;
 
-import com.rodrigues.restapi.exceptions.ExceptionResponse;
-import com.rodrigues.restapi.exceptions.InvalidJwtAuthenticationException;
-import com.rodrigues.restapi.exceptions.RequiredObjectIsNullException;
-import com.rodrigues.restapi.exceptions.ResourceNotFoundException;
+import com.rodrigues.restapi.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -46,4 +43,19 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     }
 
 
+    @ExceptionHandler(FileStorageException.class)
+    public final ResponseEntity<ExceptionResponse> FileStorageException(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(
+                new Date(), ex.getMessage(), request.getDescription(false));
+
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(MyFileNotFoundExceptioException.class)
+    public final ResponseEntity<ExceptionResponse> MyFileNotFoundException(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(
+                new Date(), ex.getMessage(), request.getDescription(false));
+
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
 }

@@ -1,4 +1,4 @@
-package com.rodrigues.restapi.data.vo.v1;
+package com.rodrigues.restapi.data.vo.v1.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
