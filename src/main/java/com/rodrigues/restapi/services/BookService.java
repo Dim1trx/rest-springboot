@@ -8,9 +8,13 @@ import com.rodrigues.restapi.mapper.DozerMapper;
 import com.rodrigues.restapi.model.Book;
 import com.rodrigues.restapi.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -20,32 +24,44 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class BookService {
     @Autowired
     private BookRepository repository;
+    private final PagedResourcesAssembler<BookVOV1> assembler =
+            new PagedResourcesAssembler<>(null, null);
+
     private Logger logger = Logger.getLogger(BookService.class.getName());
 
     public BookVOV1 findById(Long id) {
-       logger.info("finding one book");
+        logger.info("finding one book");
 
-       Book entity = repository.findById(id).
-               orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
+        Book entity = repository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
 
-       var vo = DozerMapper.parseObject(entity, BookVOV1.class);
+        var vo = DozerMapper.parseObject(entity, BookVOV1.class);
 
-       vo.add(linkTo(methodOn(BookController.class).findById(id)).withSelfRel());
+        vo.add(linkTo(methodOn(BookController.class).findById(id)).withSelfRel());
 
 
-       return vo;
+        return vo;
     }
 
-    public List<BookVOV1> findAll() {
+    public PagedModel<EntityModel<BookVOV1>> findAll(Pageable pageable) {
         logger.info("finding all books");
 
-        List<BookVOV1> vos = DozerMapper.parseListObjects(repository.findAll(), BookVOV1.class);
+        var books = repository.findAll(pageable);
+        var vos = books.map(b -> DozerMapper.parseObject(b, BookVOV1.class));
 
-        vos.forEach(
+        vos.map(
                 b -> b.add(linkTo(methodOn(BookController.class).findById(b.getKey())).withSelfRel())
         );
 
-        return vos;
+        Link link = linkTo(methodOn(BookController.class)
+                .findAll(
+                        pageable.getPageNumber(),
+                        pageable.getPageSize(),
+                        "asc")
+        )
+                .withSelfRel();
+
+        return assembler.toModel(vos, link);
     }
 
     public BookVOV1 create(BookVOV1 vo) {

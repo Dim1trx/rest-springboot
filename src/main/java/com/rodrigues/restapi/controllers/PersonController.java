@@ -1,8 +1,8 @@
 package com.rodrigues.restapi.controllers;
 
-import com.rodrigues.restapi.util.MediaType;
 import com.rodrigues.restapi.data.vo.v1.PersonVOV1;
 import com.rodrigues.restapi.services.PersonService;
+import com.rodrigues.restapi.util.MediaType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,10 +10,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /*@CrossOrigin // Allows requests from other origins*/
 @RestController
@@ -68,8 +71,50 @@ public class PersonController {
             }
     )
     /*@CrossOrigin(origins = {"http://localhost:8080", "https://rodrigues.com.br"})*/
-    public ResponseEntity<List<PersonVOV1>> findAll() {
-        return ResponseEntity.ok().body(service.findAll());
+    public ResponseEntity<PagedModel<EntityModel<PersonVOV1>>> findAll(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "limit", defaultValue = "12") Integer limit,
+            @RequestParam(value = "direction", defaultValue = "asc") String direction
+    ) {
+        var sortDirection = "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(page, limit, Sort.by(sortDirection, "firstName"));
+
+        return ResponseEntity.ok().body(service.findAllPage(pageable));
+    }
+
+    @GetMapping(value = "/findPeopleByName/{firstName}",
+            produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLCICATION_YAML})
+    @Operation(
+            summary = "Finds people by name", description = "Finds people by name",
+            tags = {"People"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success: people found",
+                            content = {
+                                    @Content(mediaType = "application/json",
+
+                                            array = @ArraySchema(schema = @Schema(implementation = PersonVOV1.class))
+                                    )
+                            }
+                    ),
+                    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content),
+            }
+    )
+    /*@CrossOrigin(origins = {"http://localhost:8080", "https://rodrigues.com.br"})*/
+    public ResponseEntity<PagedModel<EntityModel<PersonVOV1>>> findPeopleByName(
+            @PathVariable(value = "firstName") String firstName,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "limit", defaultValue = "12") Integer limit,
+            @RequestParam(value = "direction", defaultValue = "asc") String direction
+    ) {
+        var sortDirection = "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(page, limit, Sort.by(sortDirection, "firstName"));
+
+        return ResponseEntity.ok().body(service.findPeopleByName(firstName, pageable));
     }
 
     @PutMapping(
